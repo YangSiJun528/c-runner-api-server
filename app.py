@@ -21,6 +21,10 @@ def add_referrer_policy(response):
 # TCC 경로 (Docker 이미지 내 경로)
 TCC_PATH = "/usr/local/bin/tcc"
 
+@app.route('/health', methods=['GET'])
+def health_check():
+    return "OK"
+
 @app.route('/execute_c', methods=['POST', 'OPTIONS'])
 def execute_c():
     if request.method == 'OPTIONS':
@@ -83,12 +87,6 @@ def execute_c():
         "output": output,
         "error": error,
         "exit_code": exit_code
-    })
-
-@app.route('/health', methods=['GET'])
-def health():
-    return jsonify({
-        "status": "ok"
     })
 
 if __name__ == '__main__':
