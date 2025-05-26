@@ -26,32 +26,31 @@ def execute_c():
     if request.method == 'OPTIONS':
         # 프리플라이트 요청에 빈 응답(204) 반환
         return make_response('', 204)
-
+    
     data = request.get_json()
     if not data or 'code' not in data:
         return jsonify({"error": "No code provided"}), 400
-
+    
     c_code = data['code']
-
+    
     # 임시 C 파일 생성
     with tempfile.NamedTemporaryFile(mode='w', suffix='.c', delete=False) as tmp_c_file:
         tmp_c_file_name = tmp_c_file.name
         tmp_c_file.write(c_code)
-
+    
     # 임시 실행 파일 경로 (TCC는 -o 없이도 실행 가능하지만, 명시적으로 제어)
     # TCC는 -run 옵션으로 컴파일과 실행을 동시에 할 수 있음
     # tmp_executable_name = tmp_c_file_name.replace(".c", "") # 사용하지 않음
-
+    
     output = ""
     error = ""
     exit_code = 0
-
+    
     try:
         # tcc -run <source_file> [args...]
         # 컴파일 및 실행, stdin/stdout/stderr 처리
         # Timeout을 설정하여 무한 루프 방지
         compile_run_cmd = [TCC_PATH, "-run", tmp_c_file_name]
-
         process = subprocess.Popen(
             compile_run_cmd,
             stdout=subprocess.PIPE,
@@ -67,7 +66,7 @@ def execute_c():
         output = html.escape(stdout_str) # HTML 태그가 출력으로 나오는 것을 방지
         error = html.escape(stderr_str)
         exit_code = process.returncode
-
+        
     except subprocess.TimeoutExpired:
         error = "Execution timed out after 10 seconds."
         exit_code = -1 # 타임아웃 시 특별한 종료 코드
@@ -79,7 +78,7 @@ def execute_c():
         os.remove(tmp_c_file_name)
         # if os.path.exists(tmp_executable_name): # -run 사용 시 실행 파일이 남지 않음
         #     os.remove(tmp_executable_name)
-
+    
     return jsonify({
         "output": output,
         "error": error,
@@ -89,7 +88,7 @@ def execute_c():
 @app.route('/health', methods=['GET'])
 def health():
     return jsonify({
-        "health": "ok",
+        "status": "ok"
     })
 
 if __name__ == '__main__':
