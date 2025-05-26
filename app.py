@@ -86,7 +86,8 @@ def execute_c():
         "exit_code": exit_code
     })
 
-@app.route('/', methods=['GET'])
+@app.route('/health', methods=['GET'])
+def health():
     return jsonify({
         "health": "ok",
     })
