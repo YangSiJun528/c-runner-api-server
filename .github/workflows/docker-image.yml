@@ -1,17 +1,15 @@
 name: Docker Image CI
 
 on:
-  push:
-    branches: [ "main" ]
-  pull_request:
-    branches: [ "main" ]
+  release:
+    types: [ "published" ]
 
 jobs:
   build-and-publish:
     runs-on: ubuntu-latest
     permissions:
-      contents: read
-      packages: write
+      contents: read    
+      packages: write   
 
     steps:
       - uses: actions/checkout@v4
@@ -26,11 +24,14 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Define image name (lowercase)
+      - name: Define image name and lowercase release tag
         id: vars
         run: |
           IMAGE_NAME="ghcr.io/${GITHUB_REPOSITORY,,}"
+          TAG="${{ github.event.release.tag_name }}"
+          LOWER_TAG="${TAG,,}"
           echo "image_name=$IMAGE_NAME" >> $GITHUB_OUTPUT
+          echo "release_tag=$LOWER_TAG" >> $GITHUB_OUTPUT
 
       - name: Build and push Docker image
         uses: docker/build-push-action@v4
@@ -39,5 +40,5 @@ jobs:
           file: Dockerfile
           push: true
           tags: |
+            ${{ steps.vars.outputs.image_name }}:${{ steps.vars.outputs.release_tag }}
             ${{ steps.vars.outputs.image_name }}:latest
-            ${{ steps.vars.outputs.image_name }}:${{ github.sha }}
