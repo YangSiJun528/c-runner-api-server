@@ -16,6 +16,13 @@ FROM $DOCKER_IMAGE_RUNTIME AS runtime
 # Python 및 필수 패키지 설치
 RUN apk add --no-cache musl-dev python3 py3-pip
 
+# 제한된 권한의 사용자 생성
+RUN addgroup -g 1001 coderunner \
+    && adduser -u 1001 -G coderunner -s /bin/sh -D coderunner
+
+# /tmp 디렉토리를 coderunner가 사용할 수 있도록 설정
+RUN chmod 1777 /tmp
+
 # 앱 디렉터리 생성 및 이동
 WORKDIR /usr/src/app
 
@@ -40,6 +47,17 @@ ENV PATH="/usr/local/bin:${PATH}"
 ENV CC="/usr/local/bin/tcc"
 RUN tcc -v
 
-# 포트 노출 및 실행
+# coderunner 사용자가 필요한 파일들에 접근할 수 있도록 권한 설정
+RUN chmod +rx /usr/local/bin/tcc \
+    && chmod -R +r /usr/local/lib/tcc \
+    && chmod -R +r /usr/local/include
+
+# 앱 파일들의 소유권을 coderunner로 변경
+RUN chown -R coderunner:coderunner /usr/src/app
+
+# 포트 노출
 EXPOSE 5000
+
+# coderunner 사용자로 전환하여 Flask 앱 실행
+USER coderunner
 CMD ["python3", "app.py"]
