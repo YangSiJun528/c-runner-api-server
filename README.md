@@ -6,8 +6,9 @@ C-Runner API는 웹 환경에서 C 코드를 실행할 수 있는 간단한 API 
 Flask 서버와 TinyCC(TCC) 컴파일러를 사용해 C 코드를 컴파일하고 실행 결과를 JSON으로 반환합니다.
 
 ## 데모 영상
+![demo video](https://github.com/user-attachments/assets/a1b32355-498e-4378-9cee-d27c475a56ac)
 
-[![asciicast](https://asciinema.org/a/721106.svg)](https://asciinema.org/a/721106)
+[asciicast에서 보기](https://asciinema.org/a/721106)
 
 ## 개발 목적
 Markdown 기반 정적 사이트에서 C 코드블럭을 바로 실행할 수 있게 하기 위한 백엔드 서비스로 개발되었습니다.
