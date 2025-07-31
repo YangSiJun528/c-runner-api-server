@@ -11,7 +11,10 @@ Flask 서버와 TinyCC(TCC) 컴파일러를 사용해 C 코드를 컴파일하�
 [asciicast에서 보기](https://asciinema.org/a/721106)
 
 ## 개발 목적
-Markdown 기반 정적 사이트에서 C 코드블럭을 바로 실행할 수 있게 하기 위한 백엔드 서비스로 개발되었습니다.
+
+이 프로젝트는 [Markdown 기반 문서 사이트](https://github.com/YangSiJun528/docsify-c-runner-plugin)에서 C 코드 블록을 직접 실행할 수 있도록 지원하는 백엔드 서비스로 개발되었습니다.
+
+일반적인 C 실행 API로도 자유롭게 활용할 수 있습니다.
 
 ## 주의사항
 - **프로덕션 환경 사용 금지**: 이 서버는 사용자 제공 C 코드를 직접 실행하므로 보안 위험이 있습니다.
